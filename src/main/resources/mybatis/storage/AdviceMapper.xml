@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.project.storage.mapper.AdviceMapper">
+
+    <!--用户映射-->
+    <resultMap id="AdviceInfoMap" type="com.neusoft.project.storage.domain.AdviceEntity">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="selectAdviceList" parameterType="com.neusoft.project.storage.domain.AdviceEntity"
+            resultType="com.neusoft.project.storage.domain.AdviceEntity">
+        select a.id          as id,
+               a.user_id     as userId,
+               a.title       as title,
+               a.content     as content,
+               a.sort_no     as sortNo,
+               a.create_time as createTime,
+               a.create_by   as createBy,
+               a.update_time as updateTime,
+               a.update_by   as updateBy,
+               a.version     as version,
+               a.del_flag    as delFlag,
+               s.nick_name   as nickName
+
+        from t_advice a
+                 left join sys_user s
+        on a.user_id=s.user_id
+        <where>
+            and a.del_flag = 0
+            <if test="searchValue != null and searchValue != ''">
+                and(
+                nick_name like concat(#{searchValue},'%')
+                or title like concat(#{searchValue},'%')
+                or content like concat(#{searchValue},'%')
+                )
+            </if>
+        </where>
+    </select>
+</mapper>

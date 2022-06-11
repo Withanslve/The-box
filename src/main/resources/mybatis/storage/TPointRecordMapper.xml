@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.project.storage.mapper.TPointRecordMapper">
+
+    <resultMap type="com.neusoft.project.storage.domain.PointEntity" id="TPointRecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="way" column="way" jdbcType="INTEGER"/>
+        <result property="points" column="points" jdbcType="INTEGER"/>
+        <result property="advertisementId" column="advertisement_id" jdbcType="INTEGER"/>
+        <result property="orderId" column="order_id" jdbcType="INTEGER"/>
+        <result property="sortNo" column="sort_no" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="selectPointsList" resultMap="TPointRecordMap">
+        select
+            *
+        from t_point_record
+        where del_flag=0
+    </select>
+
+    <select id="select" resultMap="TPointRecordMap">
+        select
+        *
+        from t_point_record
+        where user_id = #{userId} and del_flag=0
+    </select>
+
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into t_point_record(user_id, way, points, advertisement_id, order_id, sort_no, create_time, create_by, update_time, update_by, version, del_flag)
+        values (#{userId}, #{way}, #{points}, #{advertisementId}, #{orderId}, #{sortNo}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy}, #{version}, #{delFlag})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_point_record
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="way != null">
+                way = #{way},
+            </if>
+            <if test="points != null">
+                points = #{points},
+            </if>
+            <if test="advertisementId != null">
+                advertisement_id = #{advertisementId},
+            </if>
+            <if test="orderId != null">
+                order_id = #{orderId},
+            </if>
+            <if test="sortNo != null">
+                sort_no = #{sortNo},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_point_record where id = #{id}
+    </delete>
+
+</mapper>
+

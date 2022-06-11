@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.project.storage.mapper.AppOrdMapper">
+
+    <resultMap type="com.neusoft.project.storage.domain.OrdEntity" id="TOrderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="orderCode" column="order_code" jdbcType="INTEGER"/>
+        <result property="orderName" column="order_name" jdbcType="VARCHAR"/>
+        <result property="emptyBoxOrderTime" column="empty_box_order_time" jdbcType="TIMESTAMP"/>
+        <result property="heavyBoxOrderTime" column="heavy_box_order_time" jdbcType="TIMESTAMP"/>
+        <result property="emptyBoxCallName" column="empty_box_call_name" jdbcType="VARCHAR"/>
+        <result property="emptyBoxCallPhone" column="empty_box_call_phone" jdbcType="VARCHAR"/>
+        <result property="emptyBoxCallAddress" column="empty_box_call_address" jdbcType="VARCHAR"/>
+        <result property="emptyBoxCallTime" column="empty_box_call_time" jdbcType="TIMESTAMP"/>
+        <result property="emptyBoxCallInterval" column="empty_box_call_interval" jdbcType="VARCHAR"/>
+        <result property="heavyBoxCallName" column="heavy_box_call_name" jdbcType="VARCHAR"/>
+        <result property="heavyBoxCallPhone" column="heavy_box_call_phone" jdbcType="VARCHAR"/>
+        <result property="heavyBoxCallAddress" column="heavy_box_call_address" jdbcType="VARCHAR"/>
+        <result property="heavyBoxCallTime" column="heavy_box_call_time" jdbcType="TIMESTAMP"/>
+        <result property="heavyBoxCallInterval" column="heavy_box_call_interval" jdbcType="VARCHAR"/>
+        <result property="boxId" column="box_id" jdbcType="INTEGER"/>
+        <result property="boxCode" column="box_code" jdbcType="INTEGER"/>
+        <result property="boxStandard" column="box_standard" jdbcType="VARCHAR"/>
+        <result property="boxUnitPrice" column="box_unit_price" jdbcType="INTEGER"/>
+        <result property="leaseDuration" column="lease_duration" jdbcType="INTEGER"/>
+        <result property="totalPrice" column="total_price" jdbcType="INTEGER"/>
+        <result property="sortNo" column="sort_no" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+        <result property="appDelFlag" column="app_del_flag" jdbcType="INTEGER"/>
+        <result property="backendDelFlag" column="backend_del_flag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="select" resultMap="TOrderMap">
+        select *
+        from t_order
+        <where>
+            create_time like concat('%',#{createTime},'%')
+        </where>
+    </select>
+
+    <select id="selectDateMax"  parameterType="com.neusoft.project.storage.domain.OrdEntity" resultMap="TOrderMap">
+        select
+        max(order_code) as MaxOrderCode
+        from t_order
+        <where>
+            create_time like concat('%',#{createTime},'%')
+        </where>
+    </select>
+
+    <select id="selectOrderList" parameterType="com.neusoft.project.storage.domain.OrdEntity" resultType="com.neusoft.project.storage.domain.OrdEntity">
+        select
+        o.id as id,
+        o.user_id as userId,
+        o.status as status,
+        o.order_code as orderCode,
+        o.order_name as orderName,
+        o.empty_box_order_time as emptyBoxOrderTime,
+        o.heavy_box_order_time as heavyBoxOrderTime,
+        o.empty_box_call_name as emptyBoxCallName,
+        o.empty_box_call_phone as heavyBoxCallPhone,
+        o.empty_box_call_address as heavyBoxCallAddress,
+        o.empty_box_call_time as emptyBoxCallTime,
+        o.empty_box_call_interval as emptyBoxCallInterval,
+        o.heavy_box_call_name as heavyBoxCallName,
+        o.heavy_box_call_phone as heavyBoxCallPhone,
+        o.heavy_box_call_address as emptyBoxCallAddress,
+        o.heavy_box_call_time as heavyBoxCallTime,
+        o.heavy_box_call_interval as heavyBoxCallTime,
+        o.box_id as boxId,
+        o.box_code as boxCode,
+        o.box_standard as boxStandard,
+        o.box_unit_price as boxUnitPrice,
+        o.lease_duration as leaseDuration,
+        o.total_price as totalPrice,
+        o.sort_no as sortNo,
+        o.create_time as createTime,
+        o.create_by as createBy,
+        o.update_time as updateTime,
+        o.update_by as updateBy,
+        o.version as version,
+        o.del_flag as delFlag,
+        o.app_del_flag as appDelFlag,
+        o.backend_del_flag as backendDelFlag,
+        u.nick_name as nickName
+        from t_order o
+        left join sys_user u on o.user_id=u.user_id
+        <where>
+            <if test="nickName != null and nickName !=''">
+                and u.nick_name like concat(#{nickName},'%')
+            </if>
+            <if test="status != null">
+                and o.status = #{status}
+            </if>
+            <if test="emptyBoxOrderTimerStart != null and emptyBoxOrderTimerEnd != null">
+                and o.empty_box_order_time between #{emptyBoxOrderTimerStart} and #{emptyBoxOrderTimerEnd}
+            </if>
+            <if test="heavyBoxOrderTimerStart != null and heavyBoxOrderTimerEnd != null">
+                and o.heavy_box_order_time between #{heavyBoxOrderTimerStart} and heavy_box_order_time = #{heavyBoxOrderTimerEnd}
+            </if>
+            and o.del_flag='0'
+        </where>
+    </select>
+
+    <select id="selectList" parameterType="com.neusoft.project.storage.domain.OrdEntity" resultType="com.neusoft.project.storage.domain.OrdEntity">
+        select
+        o.id as id,
+        o.user_id as userId,
+        o.status as status,
+        o.order_code as orderCode,
+        o.order_name as orderName,
+        o.empty_box_order_time as emptyBoxOrderTime,
+        o.heavy_box_order_time as heavyBoxOrderTime,
+        o.empty_box_call_name as emptyBoxCallName,
+        o.empty_box_call_phone as heavyBoxCallPhone,
+        o.empty_box_call_address as heavyBoxCallAddress,
+        o.empty_box_call_time as emptyBoxCallTime,
+        o.empty_box_call_interval as emptyBoxCallInterval,
+        o.heavy_box_call_name as heavyBoxCallName,
+        o.heavy_box_call_phone as heavyBoxCallPhone,
+        o.heavy_box_call_address as emptyBoxCallAddress,
+        o.heavy_box_call_time as heavyBoxCallTime,
+        o.heavy_box_call_interval as heavyBoxCallTime,
+        o.box_id as boxId,
+        o.box_code as boxCode,
+        o.box_standard as boxStandard,
+        o.box_unit_price as boxUnitPrice,
+        o.lease_duration as leaseDuration,
+        o.total_price as totalPrice,
+        o.sort_no as sortNo,
+        o.create_time as createTime,
+        o.create_by as createBy,
+        o.update_time as updateTime,
+        o.update_by as updateBy,
+        o.version as version,
+        o.del_flag as delFlag,
+        o.app_del_flag as appDelFlag,
+        o.backend_del_flag as backendDelFlag,
+        u.nick_name as nickName
+        from t_order o
+        left join sys_user u on o.user_id=u.user_id
+        <where>
+            o.del_flag='0'
+            and o.id=#{id}
+        </where>
+    </select>
+
+
+    <!--新增所有列-->
+    <insert id="orderAdd" keyProperty="id" useGeneratedKeys="true">
+        insert into t_order(user_id, status, order_code, order_name, empty_box_order_time, heavy_box_order_time,
+                            empty_box_call_name, empty_box_call_phone, empty_box_call_address, empty_box_call_time,
+                            empty_box_call_interval, heavy_box_call_name, heavy_box_call_phone, heavy_box_call_address,
+                            heavy_box_call_time, heavy_box_call_interval, box_id, box_code, box_standard,
+                            box_unit_price, lease_duration, total_price, sort_no, create_time, create_by, update_time,
+                            update_by, version, del_flag, app_del_flag, backend_del_flag)
+        values (#{userId}, #{status}, #{orderCode}, #{orderName}, #{emptyBoxOrderTime}, #{heavyBoxOrderTime},
+                #{emptyBoxCallName}, #{emptyBoxCallPhone}, #{emptyBoxCallAddress}, #{emptyBoxCallTime},
+                #{emptyBoxCallInterval}, #{heavyBoxCallName}, #{heavyBoxCallPhone}, #{heavyBoxCallAddress},
+                #{heavyBoxCallTime}, #{heavyBoxCallInterval}, #{boxId}, #{boxCode}, #{boxStandard}, #{boxUnitPrice},
+                #{leaseDuration}, #{totalPrice}, #{sortNo}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy},
+                #{version}, #{delFlag}, #{appDelFlag}, #{backendDelFlag})
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_order
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="orderCode != null">
+                order_code = #{orderCode},
+            </if>
+            <if test="orderName != null and orderName != ''">
+                order_name = #{orderName},
+            </if>
+            <if test="emptyBoxOrderTime != null">
+                empty_box_order_time = #{emptyBoxOrderTime},
+            </if>
+            <if test="heavyBoxOrderTime != null">
+                heavy_box_order_time = #{heavyBoxOrderTime},
+            </if>
+            <if test="emptyBoxCallName != null and emptyBoxCallName != ''">
+                empty_box_call_name = #{emptyBoxCallName},
+            </if>
+            <if test="emptyBoxCallPhone != null and emptyBoxCallPhone != ''">
+                empty_box_call_phone = #{emptyBoxCallPhone},
+            </if>
+            <if test="emptyBoxCallAddress != null and emptyBoxCallAddress != ''">
+                empty_box_call_address = #{emptyBoxCallAddress},
+            </if>
+            <if test="emptyBoxCallTime != null">
+                empty_box_call_time = #{emptyBoxCallTime},
+            </if>
+            <if test="emptyBoxCallInterval != null and emptyBoxCallInterval != ''">
+                empty_box_call_interval = #{emptyBoxCallInterval},
+            </if>
+            <if test="heavyBoxCallName != null and heavyBoxCallName != ''">
+                heavy_box_call_name = #{heavyBoxCallName},
+            </if>
+            <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">
+                heavy_box_call_phone = #{heavyBoxCallPhone},
+            </if>
+            <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">
+                heavy_box_call_address = #{heavyBoxCallAddress},
+            </if>
+            <if test="heavyBoxCallTime != null">
+                heavy_box_call_time = #{heavyBoxCallTime},
+            </if>
+            <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">
+                heavy_box_call_interval = #{heavyBoxCallInterval},
+            </if>
+            <if test="boxId != null">
+                box_id = #{boxId},
+            </if>
+            <if test="boxCode != null">
+                box_code = #{boxCode},
+            </if>
+            <if test="boxStandard != null and boxStandard != ''">
+                box_standard = #{boxStandard},
+            </if>
+            <if test="boxUnitPrice != null">
+                box_unit_price = #{boxUnitPrice},
+            </if>
+            <if test="leaseDuration != null">
+                lease_duration = #{leaseDuration},
+            </if>
+            <if test="totalPrice != null">
+                total_price = #{totalPrice},
+            </if>
+            <if test="sortNo != null">
+                sort_no = #{sortNo},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag},
+            </if>
+            <if test="appDelFlag != null">
+                app_del_flag = #{appDelFlag},
+            </if>
+            <if test="backendDelFlag != null">
+                backend_del_flag = #{backendDelFlag},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="ordDelete">
+        delete from t_order where id = #{id}
+    </delete>
+
+    <update id="updateStatusThree">
+        update t_order
+        set status=3
+        where id =#{id}
+    </update>
+
+    <update id="updateStatusFour">
+        update t_order
+        set status=4
+        where id =#{id}
+    </update>
+
+
+    <update id="updateStatusEight">
+        update t_order
+        set status=8
+        where id =#{id}
+    </update>
+
+    <update id="updateStatusNine">
+        update t_order
+        set status=9
+        where id =#{id}
+    </update>
+
+
+    <update id="updateStatusSix" parameterType="com.neusoft.project.storage.domain.OrdEntity">
+        update t_order
+        <trim prefix="set" suffixOverrides=",">
+            status=6,
+            <if test="heavyBoxCallName != null and heavyBoxCallName != ''">
+                heavy_box_call_name = #{heavyBoxCallName},
+            </if>
+            <if test="heavyBoxCallPhone != null and heavyBoxCallPhone != ''">
+                heavy_box_call_phone = #{heavyBoxCallPhone},
+            </if>
+            <if test="heavyBoxCallAddress != null and heavyBoxCallAddress != ''">
+                heavy_box_call_address = #{heavyBoxCallAddress},
+            </if>
+            <if test="heavyBoxCallTime != null">
+                heavy_box_call_time = #{heavyBoxCallTime},
+            </if>
+            <if test="heavyBoxCallInterval != null and heavyBoxCallInterval != ''">
+                heavy_box_call_interval = #{heavyBoxCallInterval},
+            </if>
+        </trim>
+        where id =#{id}
+    </update>
+
+</mapper>
+

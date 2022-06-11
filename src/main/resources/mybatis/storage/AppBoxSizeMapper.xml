@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.project.storage.mapper.AppBoxSizeMapper">
+
+    <resultMap type="com.neusoft.project.storage.domain.BoxSizeEntity" id="TBoxStandardMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="boxStandard" column="box_standard" jdbcType="VARCHAR"/>
+        <result property="boxUnitPrice" column="box_unit_price" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="sortNo" column="sort_no" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectNotUsedList" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity" resultType="com.neusoft.project.storage.domain.BoxSizeEntity">
+        SELECT
+            ts.id as id,
+            ts.box_standard as boxStandard,
+            ts.box_unit_price as boxUnitPrice
+
+        FROM
+            t_box_standard ts
+                LEFT JOIN
+            t_box_info tb
+            on ts.box_standard=tb.box_standard
+
+        WHERE tb.is_used=0 and tb.del_flag=0
+        GROUP BY ts.box_standard
+
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TBoxStandardMap">
+        select
+          id, box_standard, box_unit_price, remark, sort_no, create_time, create_by, update_time, update_by, version, del_flag
+        from t_box_standard
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="boxStandard != null and boxStandard != ''">
+                and box_standard = #{boxStandard}
+            </if>
+            <if test="boxUnitPrice != null">
+                and box_unit_price = #{boxUnitPrice}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="sortNo != null">
+                and sort_no = #{sortNo}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="version != null">
+                and version = #{version}
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                and del_flag = #{delFlag}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into t_box_standard(box_standard, box_unit_price, remark, sort_no, create_time, create_by, update_time, update_by, version, del_flag)
+        values (#{boxStandard}, #{boxUnitPrice}, #{remark}, #{sortNo}, #{createTime}, #{createBy}, #{updateTime}, #{updateBy}, #{version}, #{delFlag})
+    </insert>
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update t_box_standard
+        <set>
+            <if test="boxStandard != null and boxStandard != ''">
+                box_standard = #{boxStandard},
+            </if>
+            <if test="boxUnitPrice != null">
+                box_unit_price = #{boxUnitPrice},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="sortNo != null">
+                sort_no = #{sortNo},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from t_box_standard where id = #{id}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.project.storage.mapper.OrdMapper">
+
+    <!--用户映射-->
+    <resultMap id="OrdInfoMap" type="com.neusoft.project.storage.domain.OrdEntity">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="status" column="status"/>
+        <result property="orderCode" column="order_code"/>
+        <result property="OrderName" column="order_name"/>
+        <result property="emptyBoxOrderTime" column="empty_box_order_time"/>
+        <result property="heavyBoxOrderTime" column="heavy_box_order_time"/>
+        <result property="emptyBoxCallName" column="empty_box_call_name"/>
+        <result property="emptyBoxCallPhone" column="empty_box_call_phone"/>
+        <result property="emptyBoxCallAddress" column="empty_box_call_address"/>
+        <result property="emptyBoxCallTime" column="empty_box_call_time"/>
+        <result property="emptyBoxCallInterval" column="empty_box_call_interval"/>
+        <result property="heavyBoxCallName" column="heavy_box_call_name"/>
+        <result property="heavyBoxCallPhone" column="heavy_box_call_phone"/>
+        <result property="heavyBoxCallAddress" column="heavy_box_call_address"/>
+        <result property="heavyBoxCallTime" column="heavy_box_call_time"/>
+        <result property="heavyBoxCallInterval" column="heavy_box_call_interval"/>
+        <result property="boxId" column="box_id"/>
+        <result property="boxCode" column="box_code"/>
+        <result property="boxStandard" column="box_standard"/>
+        <result property="boxUnitPrice" column="box_unit_price"/>
+        <result property="leaseDuration" column="lease_duration"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="appDelFlag" column="app_del_flag"/>
+        <result property="backendDelFlag" column="backend_del_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <select id="selectOrderList" parameterType="com.neusoft.project.storage.domain.OrdEntity" resultType="com.neusoft.project.storage.domain.OrdEntity">
+        select
+        o.id as id,
+        o.user_id as userId,
+        o.status as status,
+        o.order_code as orderCode,
+        o.order_name as orderName,
+        o.empty_box_order_time as emptyBoxOrderTime,
+        o.heavy_box_order_time as heavyBoxOrderTime,
+        o.empty_box_call_name as emptyBoxCallName,
+        o.empty_box_call_phone as heavyBoxCallPhone,
+        o.empty_box_call_address as heavyBoxCallAddress,
+        o.empty_box_call_time as emptyBoxCallTime,
+        o.empty_box_call_interval as emptyBoxCallInterval,
+        o.heavy_box_call_name as heavyBoxCallName,
+        o.heavy_box_call_phone as heavyBoxCallPhone,
+        o.heavy_box_call_address as emptyBoxCallAddress,
+        o.heavy_box_call_time as heavyBoxCallTime,
+        o.heavy_box_call_interval as heavyBoxCallTime,
+        o.box_id as boxId,
+        o.box_code as boxCode,
+        o.box_standard as boxStandard,
+        o.box_unit_price as boxUnitPrice,
+        o.lease_duration as leaseDuration,
+        o.total_price as totalPrice,
+        o.sort_no as sortNo,
+        o.create_time as createTime,
+        o.create_by as createBy,
+        o.update_time as updateTime,
+        o.update_by as updateBy,
+        o.version as version,
+        o.del_flag as delFlag,
+        o.app_del_flag as appDelFlag,
+        o.backend_del_flag as backendDelFlag,
+        u.nick_name as nickName
+        from t_order o
+        left join sys_user u on o.user_id=u.user_id
+        <where>
+            <if test="nickName != null and nickName !=''">
+                and u.nick_name like concat(#{nickName},'%')
+            </if>
+            <if test="status != null">
+                and o.status = #{status}
+            </if>
+            <if test="emptyBoxOrderTimerStart != null and emptyBoxOrderTimerEnd != null">
+                and o.empty_box_order_time between #{emptyBoxOrderTimerStart} and #{emptyBoxOrderTimerEnd}
+            </if>
+            <if test="heavyBoxOrderTimerStart != null and heavyBoxOrderTimerEnd != null">
+                and o.heavy_box_order_time between #{heavyBoxOrderTimerStart} and heavy_box_order_time = #{heavyBoxOrderTimerEnd}
+            </if>
+            and o.del_flag='0'
+        </where>
+    </select>
+
+    <select id="selectList" parameterType="com.neusoft.project.storage.domain.OrdEntity" resultType="com.neusoft.project.storage.domain.OrdEntity">
+        select
+        o.id as id,
+        o.user_id as userId,
+        o.status as status,
+        o.order_code as orderCode,
+        o.order_name as orderName,
+        o.empty_box_order_time as emptyBoxOrderTime,
+        o.heavy_box_order_time as heavyBoxOrderTime,
+        o.empty_box_call_name as emptyBoxCallName,
+        o.empty_box_call_phone as heavyBoxCallPhone,
+        o.empty_box_call_address as heavyBoxCallAddress,
+        o.empty_box_call_time as emptyBoxCallTime,
+        o.empty_box_call_interval as emptyBoxCallInterval,
+        o.heavy_box_call_name as heavyBoxCallName,
+        o.heavy_box_call_phone as heavyBoxCallPhone,
+        o.heavy_box_call_address as emptyBoxCallAddress,
+        o.heavy_box_call_time as heavyBoxCallTime,
+        o.heavy_box_call_interval as heavyBoxCallTime,
+        o.box_id as boxId,
+        o.box_code as boxCode,
+        o.box_standard as boxStandard,
+        o.box_unit_price as boxUnitPrice,
+        o.lease_duration as leaseDuration,
+        o.total_price as totalPrice,
+        o.sort_no as sortNo,
+        o.create_time as createTime,
+        o.create_by as createBy,
+        o.update_time as updateTime,
+        o.update_by as updateBy,
+        o.version as version,
+        o.del_flag as delFlag,
+        o.app_del_flag as appDelFlag,
+        o.backend_del_flag as backendDelFlag,
+        u.nick_name as nickName
+        from t_order o
+        left join sys_user u on o.user_id=u.user_id
+        <where>
+            o.del_flag='0'
+            and o.id=#{id}
+        </where>
+    </select>
+
+    <update id="ordDelete" parameterType="com.neusoft.project.storage.domain.OrdEntity">
+        update t_order
+        set del_flag='2'
+        where id=#{id}
+    </update>
+</mapper>

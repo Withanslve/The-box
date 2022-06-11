@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.project.storage.mapper.BoxSizeMapper">
+
+    <!--用户映射-->
+    <resultMap id="BoxSizeInfoMap" type="com.neusoft.project.storage.domain.BoxSizeEntity">
+        <id property="id" column="id"/>
+        <result property="boxStandard" column="box_standard"/>
+        <result property="boxUnitPrice" column="box_unit_price"/>
+        <result property="sortNo" column="sort_no"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="selectBoxSizeList" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity"
+            resultType="com.neusoft.project.storage.domain.BoxSizeEntity">
+        select bs.id,
+               bs.box_standard                                                                                    as boxStandard,
+               bs.box_unit_price                                                                                  as boxUnitPrice,
+               bs.sort_no                                                                                         as sortNo,
+               bs.remark                                                                                          as remark,
+               bs.create_by                                                                                       as createBy,
+               bs.update_by                                                                                       as updateBy,
+               bs.update_time                                                                                     as updateTime,
+               bs.version                                                                                         as version,
+               bs.del_flag                                                                                        as delFlag,
+               bs.create_time                                                                                     as createTime,
+               COUNT(bi.id)                                                                                       as totalNumber,
+               sum(case when bi.is_used = 1 THEN 1 end)                                                           as usedNumber,
+               count(case when bi.is_used = 0 THEN 0 end)                                                         as inventoryNumber,
+               CONCAT(CAST(round(sum(case when bi.is_used = 1 THEN 1 end) / COUNT(bi.id) * 100, 2) as CHAR),
+                      '%')                                                                                        as useRatio
+        from t_box_standard bs
+                 left join t_box_info bi on bs.box_standard = bi.box_standard
+        <where>
+            and bs.del_flag=0
+            <if test="searchValue != null and searchValue!=''" >
+                and(
+                bs.box_standard like concat(#{searchValue},'%')
+                )
+            </if>
+        </where>
+        group by bs.box_standard
+    </select>
+
+
+
+    <select id="selectBoxStandardSelectList" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity"
+            resultMap="BoxSizeInfoMap">
+        SELECT
+            box_standard,
+            box_unit_price
+        from
+            t_box_standard
+        WHERE del_flag='0'
+    </select>
+<!--    <insert id="BoxSizeAdd" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity">-->
+<!--        insert into t_box_standard( id, box_standard, box_unit_price, sort_no, remark, create_by-->
+<!--                                  , update_by, update_time, version, del_flag, create_time)-->
+<!--        values (#{id}, #{boxStandard}, #{boxUnitPrice}, #{sortNo}, #{remark}, #{createBy}, #{updateBy], #{updateTime},-->
+<!--                #{version}, #{delFlag}, #{createTime})-->
+
+<!--    </insert>-->
+
+    <insert id="BoxSizeAdd" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity">
+        insert into t_box_standard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="boxStandard != null and boxStandard != ''">box_standard,</if>
+            <if test="boxUnitPrice != null and boxUnitPrice != ''">box_unit_price,</if>
+            <if test="sortNo != null and sortNo != ''">sort_no,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="version != null and version != ''">version,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="createTime != null">create_time,</if>
+
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="boxStandard!= null and boxStandard != ''">#{boxStandard},</if>
+            <if test="boxUnitPrice!= null and boxUnitPrice != ''">#{boxUnitPrice},</if>
+            <if test="sortNo!= null and sortNo != ''">#{sortNo},</if>
+            <if test="remark!= null and remark != ''">#{remark},</if>
+            <if test="createBy!= null and createBy != ''">#{createBy},</if>
+            <if test="updateBy!= null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime!= null">#{updateTime},</if>
+            <if test="version!= null and version != ''">#{version},</if>
+            <if test="delFlag!= null and delFlag != ''">#{delFlag},</if>
+            <if test="createTime!= null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <select id="selectbyc" parameterType="java.lang.String"
+            resultMap="BoxSizeInfoMap">
+        select *
+        from t_box_standard
+        where box_standard=#{boxStandard}
+    </select>
+
+
+    <select id="selectByPrice" parameterType="java.lang.String"
+            resultMap="BoxSizeInfoMap">
+        select *
+        from t_box_standard
+        where box_standard=#{boxStandard}
+    </select>
+
+
+
+    <select id="selectByid" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity"
+            resultMap="BoxSizeInfoMap">
+        select
+            box_standard
+        from t_box_standard
+        where id in (#{id})
+    </select>
+
+    <update id="BoxSizeDelete" parameterType="com.neusoft.project.storage.domain.BoxSizeEntity">
+        update t_box_standard
+        set del_flag='2'
+        where
+            id =#{id}
+
+    </update>
+</mapper>
